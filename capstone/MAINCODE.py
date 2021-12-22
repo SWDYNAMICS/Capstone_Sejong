@@ -35,7 +35,7 @@ yoloNet.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA_FP16)
 
 model = cv.dnn_DetectionModel(yoloNet)                                  #dnn model 
 model.setInputParams(size = (416,416),scale = 1/255, swapRB =True)
-arduino = serial.Serial(port = 'COM4', baudrate = 9600, timeout=0)
+arduino = serial.Serial(port = 'COM4', baudrate = 9600, timeout=2)
 time.sleep(3)
 #setInputParams (double scale, Size size, Scalar mean, bool swapRB, bool crop)
 def object_detector(image):
