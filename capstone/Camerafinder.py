@@ -1,11 +1,11 @@
 import cv2 as cv
 import numpy as np
 
-Lcap = cv.VideoCapture(0, cv.CAP_DSHOW)
+Lcap = cv.VideoCapture(2, cv.CAP_DSHOW)
 Lcap.set(3,1280)
 Lcap.set(4,720)
 
-Rcap = cv.VideoCapture(2, cv.CAP_DSHOW)
+Rcap = cv.VideoCapture(0, cv.CAP_DSHOW)
 Rcap.set(3,1280)
 Rcap.set(4,720)
 

@@ -6,14 +6,12 @@
 //흰색 0
 //defining pins and variables
 #define left A0
-#define right A1
+#define right A5
 const int spd = 220;
 int L;
 int R;
-String str_data;
-int input_data;
 int i;
-
+int input_data=0;
 Servo myservo;
 
 //defining motors
@@ -23,13 +21,13 @@ AF_DCMotor motor3(3, MOTOR34_1KHZ);
 AF_DCMotor motor4(4, MOTOR34_1KHZ);
 void runforward(){
       motor1.run(FORWARD);
-      motor1.setSpeed(165);
+      motor1.setSpeed(150);
       motor2.run(FORWARD);
-      motor2.setSpeed(165);
+      motor2.setSpeed(150);
       motor3.run(FORWARD);
-      motor3.setSpeed(165);
+      motor3.setSpeed(150);
       motor4.run(FORWARD);
-      motor4.setSpeed(165);
+      motor4.setSpeed(150);
       }
 
 void turn_left(){
@@ -62,6 +60,29 @@ void Stop(){
       motor4.run(RELEASE);
       motor4.setSpeed(0);
       }
+void line_trace(int l,int r){
+      int iter = 0;
+      if(l==1 && r==1){
+          runforward();
+      }
+      else if(l==1 && !r==1){
+        do{
+          turn_right();
+          delay(100);
+          iter++; 
+        }while(iter<5);
+      }
+      else if(!l==1 && r==1){
+        do{
+          turn_left();
+          delay(100);
+          iter++; 
+        }while(iter<5);
+      }
+      else if(!l==1 && !r==1){
+          Stop();
+      }
+}
 
 void setup() {
   pinMode(left,INPUT);
@@ -69,50 +90,31 @@ void setup() {
   myservo.write(0);
   myservo.attach(9);
   Serial.begin(9600);
-  Serial.setTimeout(100);
+  Serial.setTimeout(300);
 }
 
 void loop(){
-   if(Serial.available()>0){
-     str_data = Serial.readString();
-     Serial.println(str_data);
-     input_data=str_data.toInt();
-     L = digitalRead(left);  
-     R = digitalRead(right);
-    if(input_data == 1){
-    
-    if(L==1 && R==1){
-    for(i=0; i<5; i++){ 
-        runforward();
-        delay(10);
+    if(Serial.available()>0){
+      String str_data = Serial.readString();
+      Serial.println(str_data);
+      input_data=str_data.toInt();
+      if(input_data == 1){        
+        myservo.write(0);
       }
-    }
-    else if(L==1 && !R==1){
-      for(i=0; i<7; i++){
-        turn_right();
-        delay(50);
-        }
-      }
-
-     else if(!L==1 && R==1){
-      for(i=0; i<7; i++){
-        turn_left();
-        delay(50);
-      }
-    }
-    else if(!L==1 && !R==1){
-      for(i=0; i<5; i++){
+      else if(input_data > 1){
         Stop();
-        delay(5);
+        myservo.write(input_data);
       }
+      else{
+        Stop();  
+      }
+    }else{
+      if(input_data == 1){  
+        L = digitalRead(left);  
+        R = digitalRead(right);      
+        line_trace(L,R);
+      }
+      
+      delay(50);
     }
-  }
-  else if(input_data != 1){
-    Stop();
-    myservo.write(input_data);
-    for(i=0; i<5; i++){
-      delay(5);
-    }
-   }
- }
 }
